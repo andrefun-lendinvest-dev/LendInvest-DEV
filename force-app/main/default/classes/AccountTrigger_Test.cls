@@ -43,7 +43,7 @@ public with sharing class AccountTrigger_Test {
         AccountTriggerHandler.setGoldClassification(null);
         Test.stopTest();
 
-        List<Account> acc = [SELECT Id,Customer_classification__c,Total_Customer_Spend__c FROM Account WHERE Name = 'Test Account'];
+        List<Account> acc = [SELECT Id,Name,Customer_classification__c,Total_Customer_Spend__c FROM Account WHERE Name = 'Test Account'];
 
         System.assertEquals(0, acc[0].Total_Customer_Spend__c);
         System.assertEquals(null, acc[0].Customer_classification__c);

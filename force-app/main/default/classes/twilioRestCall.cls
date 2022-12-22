@@ -10,21 +10,26 @@ public class twilioRestCall {
     private static final String TWILIO_URL = 'https://api.twilio.com/2010-04-01/Accounts/' + ACCOUNT_SID + '/Messages.json';
  
 
-    //invocable method from LWC using a custom message or from account trigger with empty "customMessage"
+    //invocable method from LWC using a custom message
     @AuraEnabled
-    public static void sendGoldNotifyMessageTrigger(Account Account,String customMessage){
-        String AccountJSON = JSON.serialize(Account);
-        sendGoldNotifyMessage(AccountJSON,customMessage,CEOPhoneNumber,TwilioNumber);
+    public static void sendGoldNotifyMessageLWC(String AccountId,String AccountName,String AccountNumber,String customMessage){
+        sendGoldNotifyMessage(AccountId,AccountName,customMessage,AccountNumber,TwilioNumber);
+
+    }
+
+    //invocable from account trigger with empty "customMessage"
+    public static void sendGoldNotifyMessageTrigger(String AccountId,String AccountName,String customMessage){
+        sendGoldNotifyMessage(AccountId,AccountName,customMessage,CEOPhoneNumber,TwilioNumber);
 
     }
 
     //future method to perfom the callout to "Twilio REST API Service" sending out the SMS using the "CEOPhoneNumber" as recipient, "AccountName" to be used within the text message,
     //"TwilioNumber" the phone number which the SMS will be sent from,"customMessage" used whenever called from Account page "LWC" to send a custom message ("null" when called from "Send SMS GOLD - Flow"  to use standard SMS message)
     @Future(callout=true)
-    public static void sendGoldNotifyMessage(String AccountJSON,String customMessage,String CEOPhoneNumber,String TwilioNumber) {
+    public static void sendGoldNotifyMessage(String AccountId,String AccountName,String customMessage,String recipientNumber,String TwilioNumber) {
         try{
 
-            Account Account = (Account) JSON.deserialize(AccountJSON, Account.Class);
+            Account Account = new Account(Id = AccountId,Name = AccountName);
             
             //Object useful to track the response from the "Twilio REST API Service"
             Log__c responseLog = new Log__c(Class_Name__c = 'twilioRestCall',Method_Name__c = 'sendGoldNotifyMessage');
@@ -48,7 +53,7 @@ public class twilioRestCall {
             Blob headerValue = Blob.valueOf(ACCOUNT_SID + ':' + AUTH_TOKEN);
             String authorizationHeader = 'BASIC ' + EncodingUtil.base64Encode(headerValue);
             request.setHeader('Authorization', authorizationHeader);
-            request.setBody('To='+EncodingUtil.urlEncode(CEOPhoneNumber,'UTF-8')+'&From='+EncodingUtil.urlEncode(TwilioNumber,'UTF-8')+'&Body='+messageBody);
+            request.setBody('To='+EncodingUtil.urlEncode(recipientNumber,'UTF-8')+'&From='+EncodingUtil.urlEncode(TwilioNumber,'UTF-8')+'&Body='+messageBody);
         
             HttpResponse response = http.send(request);
 

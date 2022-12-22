@@ -13,11 +13,11 @@ private class twilioRestCall_Test {
     //method to test the REST Callot used to send the SMS through Twilio API Service
     @IsTest
     static void testFutureCall() {
-      List<Account> acc = [SELECT Id,sms_GOLD_Sent__c FROM Account WHERE Name = 'Test Account'];
-      String accJSON = JSON.serialize(acc[0]);
+      List<Account> acc = [SELECT Id,Name,sms_GOLD_Sent__c FROM Account WHERE Name = 'Test Account'];
+
       Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock());
       Test.startTest();
-      twilioRestCall.sendGoldNotifyMessage(accJSON,null,TEST_CEO_NUMBER, TEST_TWILIO_NUMBER);
+      twilioRestCall.sendGoldNotifyMessage(acc[0].Id,acc[0].Name,null,TEST_CEO_NUMBER, TEST_TWILIO_NUMBER);
       Test.stopTest();
 
       List<Log__c> Logs = [SELECT Id,Status__c,Status_Code__c,Message__c FROM Log__c];
@@ -28,10 +28,10 @@ private class twilioRestCall_Test {
     //method to test the trigger method call
     @IsTest
     static void testTriggerCall() {
-      List<Account> acc = [SELECT Id,sms_GOLD_Sent__c FROM Account WHERE Name = 'Test Account'];
+      List<Account> acc = [SELECT Id,Name,sms_GOLD_Sent__c FROM Account WHERE Name = 'Test Account'];
       Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock());
       Test.startTest();
-      twilioRestCall.sendGoldNotifyMessageTrigger(acc[0],CUSTOM_MESSAGE);
+      twilioRestCall.sendGoldNotifyMessageTrigger(acc[0].Id,acc[0].Name,CUSTOM_MESSAGE);
       Test.stopTest();
 
       List<Log__c> Logs = [SELECT Id,Status__c,Status_Code__c,Message__c FROM Log__c];
@@ -43,12 +43,11 @@ private class twilioRestCall_Test {
     //method to test exceptions
     @IsTest
     static void testExceptions() {
-      List<Account> acc = [SELECT Id,sms_GOLD_Sent__c FROM Account WHERE Name = 'Test Account'];
+      List<Account> acc = [SELECT Id,Name,sms_GOLD_Sent__c FROM Account WHERE Name = 'Test Account'];
 
-      String accJSON = JSON.serialize(acc[0]);
       Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock());
       Test.startTest();
-      twilioRestCall.sendGoldNotifyMessage(accJSON,null,null, TEST_TWILIO_NUMBER);
+      twilioRestCall.sendGoldNotifyMessage(acc[0].Id,acc[0].Name,null,null, TEST_TWILIO_NUMBER);
       Test.stopTest();
 
       List<Log__c> Logs = [SELECT Id,Status__c,Status_Code__c,Message__c FROM Log__c];

@@ -6,7 +6,7 @@ public with sharing class AccountTriggerHandler {
             acc.Customer_classification__c = System.Label.GOLD_Value;
 
             if(acc.sms_GOLD_Sent__c == false){
-                twilioRestCall.sendGoldNotifyMessageTrigger(acc,null);
+                twilioRestCall.sendGoldNotifyMessageTrigger(acc.Id,acc.Name,null);
             }   
         }
         catch(Exception ex){

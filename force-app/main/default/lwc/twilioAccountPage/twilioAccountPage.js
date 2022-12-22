@@ -2,7 +2,8 @@ import { LightningElement,track,api,wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-import ACCOUNT_OBJECT from '@salesforce/schema/Account';
+import ACCOUNT_NAME from '@salesforce/schema/Account.Name';
+import ACCOUNT_NUMBER from '@salesforce/schema/Account.AccountNumber';
 import sendGoldSMS from '@salesforce/apex/twilioAccountPageController.sendGoldNotifyMessageLWC';
 
 
@@ -11,21 +12,29 @@ export default class TwilioAccountPage extends LightningElement {
     @api recordId;
     @track buttonDisabled = true;
     @track inputMessage;
+    @track errorMessage = 'We had some issues sending your SMS message, please contact the assistance';
 
     //getting the record through "recordId" and "wire" function
-    @wire(getRecord, { recordId: '$recordId', fields: [ACCOUNT_OBJECT] })
+    @wire(getRecord, { recordId: '$recordId', fields: [ACCOUNT_NAME,ACCOUNT_NUMBER] })
     account;
-    
+
+    get name() {
+        return getFieldValue(this.account.data, ACCOUNT_NAME);
+    }
+
+    get number() {
+        return getFieldValue(this.account.data, ACCOUNT_NUMBER);
+    }
+
     //enablig sending button when the "messageBox" value is different from "NULL" on lighting input area change
     handleChange(){
-        console.log(this.account.data);
         this.inputMessage = this.template.querySelector('[data-id="messageBox"]').value;
         this.buttonDisabled = (this.inputMessage) ? false : true;
     }
 
     //calling the LWC controller to perform the call to Twilio REST API Service on "Send" button click
     handleClick(){
-        sendGoldSMS({ Account: this.account.data, customMessage : this.inputMessage })
+        sendGoldSMS({ AccountId: this.recordId,AccountName: this.name,AccountNumber: this.number, customMessage : this.inputMessage })
             .then((result) => {
                 console.log('success');
                 console.log(result);
@@ -35,6 +44,7 @@ export default class TwilioAccountPage extends LightningElement {
             .catch((error) => {
                 console.log('error');
                 console.log(error);
+                this.errorMessage = error.body.stackTrace +' : ' + error.body.message;
                 this.showToastErrorMessage();
                 this.resetComponent();
             });
@@ -61,7 +71,7 @@ export default class TwilioAccountPage extends LightningElement {
     showToastErrorMessage(){
         const event = new ShowToastEvent({
             title: 'Error',
-            message: 'We had some issues sending your SMS message, please contact the assistance',
+            message: this.errorMessage,
             variant : 'error'
         });
         this.dispatchEvent(event);
