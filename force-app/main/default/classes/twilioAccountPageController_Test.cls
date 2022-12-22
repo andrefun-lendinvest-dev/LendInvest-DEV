@@ -20,8 +20,9 @@ public with sharing class twilioAccountPageController_Test {
         twilioAccountPageController.sendGoldNotifyMessageLWC(acc[0].Id,acc[0].Name,acc[0].AccountNumber,'custom Message');
         Test.stopTest();
 
-        List<Log__c> Logs = [SELECT Id,Status__c,Status_Code__c,Message__c FROM Log__c];
+        List<Log__c> Logs = [SELECT Id,Status__c,Account__c,Status_Code__c,Message__c FROM Log__c];
         System.assertEquals(1, Logs.size());
+        System.assertEquals(acc[0].Id, Logs[0].Account__c);
         System.assertEquals('201', Logs[0].Status_Code__c);
     }
 

@@ -20,8 +20,9 @@ private class twilioRestCall_Test {
       twilioRestCall.sendGoldNotifyMessage(acc[0].Id,acc[0].Name,null,TEST_CEO_NUMBER, TEST_TWILIO_NUMBER);
       Test.stopTest();
 
-      List<Log__c> Logs = [SELECT Id,Status__c,Status_Code__c,Message__c FROM Log__c];
+      List<Log__c> Logs = [SELECT Id,Account__c,Status__c,Status_Code__c,Message__c FROM Log__c];
       System.assertEquals(1, Logs.size());
+      System.assertEquals(acc[0].Id, Logs[0].Account__c);
       System.assertEquals('201', Logs[0].Status_Code__c);
     }
 
@@ -34,8 +35,9 @@ private class twilioRestCall_Test {
       twilioRestCall.sendGoldNotifyMessageTrigger(acc[0].Id,acc[0].Name,CUSTOM_MESSAGE);
       Test.stopTest();
 
-      List<Log__c> Logs = [SELECT Id,Status__c,Status_Code__c,Message__c FROM Log__c];
+      List<Log__c> Logs = [SELECT Id,Account__c,Status__c,Status_Code__c,Message__c FROM Log__c];
       System.assertEquals(1, Logs.size());
+      System.assertEquals(acc[0].Id, Logs[0].Account__c);
       System.assertEquals('201', Logs[0].Status_Code__c);
 
     }
@@ -50,8 +52,9 @@ private class twilioRestCall_Test {
       twilioRestCall.sendGoldNotifyMessage(acc[0].Id,acc[0].Name,null,null, TEST_TWILIO_NUMBER);
       Test.stopTest();
 
-      List<Log__c> Logs = [SELECT Id,Status__c,Status_Code__c,Message__c FROM Log__c];
+      List<Log__c> Logs = [SELECT Id,Account__c,Status__c,Status_Code__c,Message__c FROM Log__c];
       System.assertEquals(1, Logs.size());
+      System.assertEquals(acc[0].Id, Logs[0].Account__c);
       System.assertEquals('Error', Logs[0].Status__c);
     }
 }
