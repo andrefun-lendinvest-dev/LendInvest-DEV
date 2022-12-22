@@ -8,18 +8,20 @@ public class twilioRestCall {
 
     //Twilio URL Endpoint
     private static final String TWILIO_URL = 'https://api.twilio.com/2010-04-01/Accounts/' + ACCOUNT_SID + '/Messages.json';
+ 
 
-
-    //invocable method to be use within the "Send SMS GOLD - Flow" with invocable input to add the account name directly from the flow record
-    @InvocableMethod(label = 'Send SMS GOLD Method')
-    public static void sendGoldNotifyMessageInvocable(List<InvocableInputs> invocableInputsVar){
-        sendGoldNotifyMessage(invocableInputsVar[0].AccountName,null,CEOPhoneNumber,TwilioNumber);
+    //invocable method from LWC using a custom message or from account trigger with empty "customMessage"
+    @AuraEnabled
+    public static void sendGoldNotifyMessageTrigger(String AccountName,String customMessage){
+        sendGoldNotifyMessage(AccountName,customMessage,CEOPhoneNumber,TwilioNumber);
     }
 
     //future method to perfom the callout to "Twilio REST API Service" sending out the SMS using the "CEOPhoneNumber" as recipient, "AccountName" to be used within the text message,
     //"TwilioNumber" the phone number which the SMS will be sent from,"customMessage" used whenever called from Account page "LWC" to send a custom message ("null" when called from "Send SMS GOLD - Flow"  to use standard SMS message)
     @Future(callout=true)
     public static void sendGoldNotifyMessage(String AccountName,String customMessage,String CEOPhoneNumber,String TwilioNumber) {
+        try{
+
 
         //Object useful to track the response from the "Twilio REST API Service"
         Log__c responseLog = new Log__c(Class_Name__c = 'twilioRestCall',Method_Name__c = 'sendGoldNotifyMessage');
@@ -62,6 +64,15 @@ public class twilioRestCall {
 
         }
 
+        } catch (Exception ex) {
+            // Log the error message and stack trace
+            System.debug(ex.getMessage() + ': ' + ex.getStackTraceString());
+            System.debug('An error occurred while calling Twilio API REST Service');
+
+            Log__c errorLog = new Log__c(Class_Name__c = 'twilioRestCall',Method_Name__c = 'sendGoldNotifyMessage',Message__c = ex.getMessage(),Status__c = 'Error');
+            insert errorLog;
+        }
+
     }   
     
     //useful to spilit the SMS mesage in two parts through "Custom Labels" and make it more easily editable and avoiding hard coded text
@@ -70,11 +81,4 @@ public class twilioRestCall {
         public String secondPart;
     }
 
-    //variable to be set within the Flow "Send SMS GOLD - Flow"
-    public class InvocableInputs{
-
-        @InvocableVariable
-        public String AccountName;
-
-    }
 }

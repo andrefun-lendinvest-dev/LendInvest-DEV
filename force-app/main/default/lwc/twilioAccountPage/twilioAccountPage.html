@@ -3,9 +3,11 @@
         <div class="slds-m-vertical_medium">
             <h1 class="slds-text-heading_small"><lightning-icon icon-name="utility:live_message" alternative-text="Send SMS" title="Send SMS"></lightning-icon>&nbsp;&nbsp;&nbsp;Send custom SMS</h1>
         </div>
-        
         <div class="row">
-            <lightning-textarea name="input1"  placeholder="Enter your message..."></lightning-textarea>
+            <lightning-textarea data-id="messageBox" name="inputbox" placeholder="Enter your message..." onchange={handleChange} ></lightning-textarea>
+        </div>
+        <div class="slds-m-top_small slds-m-bottom_xx-large">
+            <lightning-button variant="brand" label="Send" title="Send" class="slds-float_right slds-m-bottom_xx-large" onclick={handleClick} disabled={buttonDisabled}></lightning-button>
         </div>
     </div>
 </template>

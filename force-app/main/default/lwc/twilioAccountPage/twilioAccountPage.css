@@ -1,3 +1,6 @@
 .slds-box{
     background-color: white;
+    height: auto;
+    min-height: 220px;
+
 }
