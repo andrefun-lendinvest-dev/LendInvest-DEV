@@ -10,20 +10,20 @@ public class twilioRestCall {
     private static final String TWILIO_URL = 'https://api.twilio.com/2010-04-01/Accounts/' + ACCOUNT_SID + '/Messages.json';
  
 
-    //invocable method from LWC using a custom message
+    //invocable method from LWC using a custom message and a custom phone number
     @AuraEnabled
     public static void sendGoldNotifyMessageLWC(String AccountId,String AccountName,String AccountNumber,String customMessage){
         sendGoldNotifyMessage(AccountId,AccountName,customMessage,AccountNumber,TwilioNumber);
 
     }
 
-    //invocable from account trigger with empty "customMessage"
+    //invocable from account trigger with empty "customMessage" to use the standard "GOLD" SMS message and "CEOPhoneNumber" as recipient
     public static void sendGoldNotifyMessageTrigger(String AccountId,String AccountName,String customMessage){
         sendGoldNotifyMessage(AccountId,AccountName,customMessage,CEOPhoneNumber,TwilioNumber);
 
     }
 
-    //future method to perfom the callout to "Twilio REST API Service" sending out the SMS using the "CEOPhoneNumber" as recipient, "AccountName" to be used within the text message,
+    //future method to perfom the callout to "Twilio REST API Service" sending out the SMS using the "recipientNumber" as recipient, "AccountName" to be used within the text message,
     //"TwilioNumber" the phone number which the SMS will be sent from,"customMessage" used whenever called from Account page "LWC" to send a custom message ("null" when called from "Send SMS GOLD - Flow"  to use standard SMS message)
     @Future(callout=true)
     public static void sendGoldNotifyMessage(String AccountId,String AccountName,String customMessage,String recipientNumber,String TwilioNumber) {
