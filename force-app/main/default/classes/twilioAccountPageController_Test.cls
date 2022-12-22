@@ -16,9 +16,13 @@ public with sharing class twilioAccountPageController_Test {
 
         List<Account> acc = [SELECT Id,Name,Customer_classification__c,Total_Customer_Spend__c FROM Account WHERE Name = 'Test Account'];
 
-        Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock());
-        twilioAccountPageController.sendGoldNotifyMessageLWC(acc[0].Name,'custom Message');
+        Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock()); 
+        twilioAccountPageController.sendGoldNotifyMessageLWC(acc[0],'custom Message');
         Test.stopTest();
+
+        List<Log__c> Logs = [SELECT Id,Status__c,Status_Code__c,Message__c FROM Log__c];
+        System.assertEquals(1, Logs.size());
+        System.assertEquals('201', Logs[0].Status_Code__c);
     }
 
 }

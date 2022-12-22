@@ -2,7 +2,7 @@ import { LightningElement,track,api,wire } from 'lwc';
 import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-import ACCOUNT_NAME from '@salesforce/schema/Account.Name';
+import ACCOUNT_OBJECT from '@salesforce/schema/Account';
 import sendGoldSMS from '@salesforce/apex/twilioAccountPageController.sendGoldNotifyMessageLWC';
 
 
@@ -12,24 +12,20 @@ export default class TwilioAccountPage extends LightningElement {
     @track buttonDisabled = true;
     @track inputMessage;
 
-    //getting the record name through "recordId" and "wire" function
-    @wire(getRecord, { recordId: '$recordId', fields: [ACCOUNT_NAME] })
+    //getting the record through "recordId" and "wire" function
+    @wire(getRecord, { recordId: '$recordId', fields: [ACCOUNT_OBJECT] })
     account;
-
-    //populate "name" variable
-    get name() {
-        return getFieldValue(this.account.data, ACCOUNT_NAME);
-    }
     
     //enablig sending button when the "messageBox" value is different from "NULL" on lighting input area change
     handleChange(){
+        console.log(this.account.data);
         this.inputMessage = this.template.querySelector('[data-id="messageBox"]').value;
         this.buttonDisabled = (this.inputMessage) ? false : true;
     }
 
     //calling the LWC controller to perform the call to Twilio REST API Service on "Send" button click
     handleClick(){
-        sendGoldSMS({ AccountName: this.name, customMessage : this.inputMessage })
+        sendGoldSMS({ Account: this.account.data, customMessage : this.inputMessage })
             .then((result) => {
                 console.log('success');
                 console.log(result);
