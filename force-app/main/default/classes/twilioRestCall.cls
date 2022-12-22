@@ -76,6 +76,7 @@ public class twilioRestCall {
             System.debug(ex.getMessage() + ': ' + ex.getStackTraceString());
             System.debug('An error occurred while calling Twilio API REST Service');
 
+            //creating a log record with error information whenever something goes wrong within the callout because of the future method running async
             Log__c errorLog = new Log__c(Class_Name__c = 'twilioRestCall',Method_Name__c = 'sendGoldNotifyMessage',Message__c = ex.getMessage() + ': ' + ex.getStackTraceString(),Status__c = 'Error');
             insert errorLog;
         }
