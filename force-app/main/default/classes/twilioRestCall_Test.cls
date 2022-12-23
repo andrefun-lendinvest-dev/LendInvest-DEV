@@ -17,7 +17,7 @@ private class twilioRestCall_Test {
 
       Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock());
       Test.startTest();
-      twilioRestCall.sendGoldNotifyMessage(acc[0].Id,acc[0].Name,null,TEST_CEO_NUMBER, TEST_TWILIO_NUMBER);
+      twilioRestCall.sendGoldNotifyMessage(acc[0].Id,acc[0].Name,null,TEST_CEO_NUMBER, TEST_TWILIO_NUMBER,true);
       Test.stopTest();
 
       List<Log__c> Logs = [SELECT Id,Account__c,Status__c,Status_Code__c,Message__c FROM Log__c];
@@ -49,7 +49,7 @@ private class twilioRestCall_Test {
 
       Test.setMock(HttpCalloutMock.class, new TwilioCalloutMock());
       Test.startTest();
-      twilioRestCall.sendGoldNotifyMessage(acc[0].Id,acc[0].Name,null,null, TEST_TWILIO_NUMBER);
+      twilioRestCall.sendGoldNotifyMessage(acc[0].Id,acc[0].Name,null,null, TEST_TWILIO_NUMBER,true);
       Test.stopTest();
 
       List<Log__c> Logs = [SELECT Id,Account__c,Status__c,Status_Code__c,Message__c FROM Log__c];

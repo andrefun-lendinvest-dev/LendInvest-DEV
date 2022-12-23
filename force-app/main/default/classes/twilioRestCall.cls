@@ -13,20 +13,20 @@ public class twilioRestCall {
     //invocable method from LWC using a custom message and a custom phone number
     @AuraEnabled
     public static void sendGoldNotifyMessageLWC(String AccountId,String AccountName,String AccountNumber,String customMessage){
-        sendGoldNotifyMessage(AccountId,AccountName,customMessage,AccountNumber,TwilioNumber);
+        sendGoldNotifyMessage(AccountId,AccountName,customMessage,AccountNumber,TwilioNumber,false);
 
     }
 
     //invocable from account trigger with empty "customMessage" to use the standard "GOLD" SMS message and "CEOPhoneNumber" as recipient
     public static void sendGoldNotifyMessageTrigger(String AccountId,String AccountName,String customMessage){
-        sendGoldNotifyMessage(AccountId,AccountName,customMessage,CEOPhoneNumber,TwilioNumber);
+        sendGoldNotifyMessage(AccountId,AccountName,customMessage,CEOPhoneNumber,TwilioNumber,true);
 
     }
 
     //future method to perfom the callout to "Twilio REST API Service" sending out the SMS using the "recipientNumber" as recipient, "AccountName" to be used within the text message,
     //"TwilioNumber" the phone number which the SMS will be sent from,"customMessage" used whenever called from Account page "LWC" to send a custom message ("null" when called from "Send SMS GOLD - Flow"  to use standard SMS message)
     @Future(callout=true)
-    public static void sendGoldNotifyMessage(String AccountId,String AccountName,String customMessage,String recipientNumber,String TwilioNumber) {
+    public static void sendGoldNotifyMessage(String AccountId,String AccountName,String customMessage,String recipientNumber,String TwilioNumber,Boolean isFromTrigger) {
         try{
 
             Account Account = new Account(Id = AccountId,Name = AccountName);
@@ -71,10 +71,13 @@ public class twilioRestCall {
             } else {
                 System.debug(response.getBody());
 
-                //update the account boolean field to "true" whenever the Twilio REST API Service answer correctly
-                Account.sms_GOLD_Sent__c = true;
+                if(isFromTrigger == true){
+                    //update the account boolean field to "true" whenever the Twilio REST API Service answer correctly
+                    Account.sms_GOLD_Sent__c = true;
 
-                update Account;
+                    update Account;
+                }
+
             }
 
         } catch (Exception ex) {
