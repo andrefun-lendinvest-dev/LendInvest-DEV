@@ -3,7 +3,7 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import ACCOUNT_NAME from '@salesforce/schema/Account.Name';
-import ACCOUNT_NUMBER from '@salesforce/schema/Account.AccountNumber';
+import ACCOUNT_PHONE from '@salesforce/schema/Account.Phone';
 import sendGoldSMS from '@salesforce/apex/twilioAccountPageController.sendGoldNotifyMessageLWC';
 
 
@@ -15,7 +15,7 @@ export default class TwilioAccountPage extends LightningElement {
     @track errorMessage = 'We had some issues sending your SMS message, please contact the assistance';
 
     //getting the record through "recordId" and "wire" function
-    @wire(getRecord, { recordId: '$recordId', fields: [ACCOUNT_NAME,ACCOUNT_NUMBER] })
+    @wire(getRecord, { recordId: '$recordId', fields: [ACCOUNT_NAME,ACCOUNT_PHONE] })
     account;
 
     get name() {
@@ -23,7 +23,7 @@ export default class TwilioAccountPage extends LightningElement {
     }
 
     get number() {
-        return getFieldValue(this.account.data, ACCOUNT_NUMBER);
+        return getFieldValue(this.account.data, ACCOUNT_PHONE);
     }
 
     //enablig sending button when the "messageBox" value is different from "NULL" on lighting input area change
