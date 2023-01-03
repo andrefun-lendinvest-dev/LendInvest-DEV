@@ -34,20 +34,28 @@ export default class TwilioAccountPage extends LightningElement {
 
     //calling the LWC controller to perform the call to Twilio REST API Service on "Send" button click
     handleClick(){
-        sendGoldSMS({ AccountId: this.recordId,AccountName: this.name,AccountNumber: this.number, customMessage : this.inputMessage })
-            .then((result) => {
-                console.log('success');
-                console.log(result);
-                this.showToastSuccessMessage();
-                this.resetComponent();
-            })
-            .catch((error) => {
-                console.log('error');
-                console.log(error);
-                this.errorMessage = error.body.stackTrace +' : ' + error.body.message;
-                this.showToastErrorMessage();
-                this.resetComponent();
-            });
+
+        if(this.number == null){
+           this.errorMessage = 'This account doesn\'t have any phone number, please add one before sending the SMS message';
+           this.showToastErrorMessage();
+        } else {
+            sendGoldSMS({ AccountId: this.recordId,AccountName: this.name,AccountNumber: this.number, customMessage : this.inputMessage })         
+                .then((result) => {
+                    console.log('success');
+                    console.log(result);
+                    this.showToastSuccessMessage();
+                    this.resetComponent();
+                 })
+                 .catch((error) => {
+                    console.log('error');
+                    console.log(error);
+                    this.errorMessage = error.body.stackTrace +' : ' + error.body.message;
+                    this.showToastErrorMessage();
+                    this.resetComponent();
+                 });
+        }
+
+
     }
 
     //reset initial LWC configuration
