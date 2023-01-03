@@ -1,8 +1,8 @@
-trigger OpportunityTrigger on Opportunity (before update,after insert,before delete) {
+trigger OpportunityTrigger on Opportunity (before update,before insert,before delete) {
     Map<String,OpportunityTriggerHandler.AccountToUpdate> AccToUpdateMap = new Map<String,OpportunityTriggerHandler.AccountToUpdate>();
 
     if(Trigger.isInsert){
-        if(Trigger.isAfter){
+        if(Trigger.isBefore){
             for(Opportunity opp : Trigger.new){
                 if(opp.StageName == System.Label.Opportunity_Stage_Closed_Won){
                     OpportunityTriggerHandler.addAccountTotalCustomerSpend(opp,AccToUpdateMap);
