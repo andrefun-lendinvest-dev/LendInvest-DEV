@@ -86,6 +86,33 @@ public with sharing class OpportunityTrigger_Test {
         System.assertEquals(null, acc[0].Customer_classification__c);
 
     }
+    
+    //testing assigning two opportunities to the same account chaning values within them and stage "Closed Won"
+    @isTest
+    static void updateMultipleOppClosedWon() {
+
+        Test.startTest();
+
+        List<Opportunity> oppList = [SELECT Id,Amount,AccountId,StageName FROM Opportunity];
+        List<Account> accList = [SELECT Id FROM Account ];
+
+        for(Opportunity opp : oppList){
+            opp.Amount = 26000;
+            opp.StageName = 'Closed Won';
+            opp.AccountId = accList[1].Id;
+        }
+
+        update oppList;
+        
+
+        Test.stopTest();
+
+        List<Account> acc = [SELECT Id,Customer_classification__c,Total_Customer_Spend__c FROM Account WHERE Name = 'Test Account1'];
+
+        System.assertEquals(52000, acc[0].Total_Customer_Spend__c);
+        System.assertEquals('GOLD', acc[0].Customer_classification__c);
+
+    }
 
 
     //testing deleting an opportunity
@@ -166,7 +193,7 @@ public with sharing class OpportunityTrigger_Test {
         accToUpdate.TotalToRemove = null;
 
         Test.startTest();
-        OpportunityTriggerHandler.modifyAccountTotalCustomerSpend(null,null,null, true);
+        OpportunityTriggerHandler.modifyAccountTotalCustomerSpend(null,null, true);
         OpportunityTriggerHandler.updateAccountMap(new Map<String,OpportunityTriggerHandler.AccountToUpdate>{accToUpdate.AccountId => accToUpdate});
         Test.stopTest();
 
