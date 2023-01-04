@@ -2,31 +2,17 @@ public class twilioRestCall {
     //Custom Labels defined variables
     private static final String ACCOUNT_SID = System.Label.ACCOUNT_SID; //Twilio Account name used to authenticate API requests
     private static final String AUTH_TOKEN = System.Label.AUTH_TOKEN; //Twilio authentication token for the Twilio account. It is used in combination with the account SID to authenticate API requests
-    private static final String CEOPhoneNumber = System.Label.CEO_Business_Number; 
     private static final String smsMessageLabel = System.Label.GOLD_SMS_Body_Text; 
     private static final String TwilioNumber = System.Label.TWILIO_NUMBER;
 
     //Twilio URL Endpoint
     private static final String TWILIO_URL = 'https://api.twilio.com/2010-04-01/Accounts/' + ACCOUNT_SID + '/Messages.json';
  
-
-    //invocable method from LWC using a custom message and a custom phone number
-    @AuraEnabled
-    public static void sendGoldNotifyMessageLWC(String AccountId,String AccountName,String AccountNumber,String customMessage){
-        sendGoldNotifyMessage(AccountId,AccountName,customMessage,AccountNumber,TwilioNumber,false);
-
-    }
-
-    //invocable from account trigger with empty "customMessage" to use the standard "GOLD" SMS message and "CEOPhoneNumber" as recipient
-    public static void sendGoldNotifyMessageTrigger(String AccountId,String AccountName,String customMessage){
-        sendGoldNotifyMessage(AccountId,AccountName,customMessage,CEOPhoneNumber,TwilioNumber,true);
-
-    }
-
+    //this method can be called from LWC controller using a custom message and a custom phone number or from account trigger with empty "customMessage" to use the standard "GOLD" SMS message and "CEOPhoneNumber" as recipient
     //future method to perfom the callout to "Twilio REST API Service" sending out the SMS using the "recipientNumber" as recipient, "AccountName" to be used within the text message,
     //"TwilioNumber" the phone number which the SMS will be sent from,"customMessage" used whenever called from Account page "LWC" to send a custom message ("null" when called from "Send SMS GOLD - Flow"  to use standard SMS message)
     @Future(callout=true)
-    public static void sendGoldNotifyMessage(String AccountId,String AccountName,String customMessage,String recipientNumber,String TwilioNumber,Boolean isFromTrigger) {
+    public static void sendGoldNotifyMessage(String AccountId,String AccountName,String customMessage,String recipientNumber,Boolean isFromTrigger) {
         try{
 
             Account Account = new Account(Id = AccountId,Name = AccountName);
