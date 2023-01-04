@@ -67,8 +67,8 @@ trigger OpportunityTrigger on Opportunity (before update,before insert,before de
                         OpportunityTriggerHandler.removeAccountTotalCustomerSpend(oldOpp,AccToUpdateMap);
                     }
         
-        			//checking if the opportunity keeps stage "Closed Won" but change the relative account
-					if(newOpp.StageName == System.Label.Opportunity_Stage_Closed_Won && oldOpp.StageName == System.Label.Opportunity_Stage_Closed_Won && isSwitchAccount){
+        	    //checking if the opportunity keeps stage "Closed Won" but change the relative account
+		    if(newOpp.StageName == System.Label.Opportunity_Stage_Closed_Won && oldOpp.StageName == System.Label.Opportunity_Stage_Closed_Won && isSwitchAccount){
                         OpportunityTriggerHandler.modifyAccountTotalCustomerSpend(newOpp,AccToUpdateMap,true);
                         OpportunityTriggerHandler.modifyAccountTotalCustomerSpend(oldOpp,AccToUpdateMap,false);
                     }        			
