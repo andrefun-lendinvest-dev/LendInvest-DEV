@@ -30,8 +30,8 @@ trigger OpportunityTrigger on Opportunity (before update,before insert,before de
                     }
                     
                     else if(newOpp.StageName == System.Label.Opportunity_Stage_Closed_Won && oldOpp.StageName == System.Label.Opportunity_Stage_Closed_Won ){
-                        OpportunityTriggerHandler.addAccountTotalCustomerSpend(newOpp,AccToUpdateMap);
-                        OpportunityTriggerHandler.removeAccountTotalCustomerSpend(oldOpp,AccToUpdateMap);
+                        OpportunityTriggerHandler.modifyAccountTotalCustomerSpend(newOpp,AccToUpdateMap,true);
+                        OpportunityTriggerHandler.modifyAccountTotalCustomerSpend(oldOpp,AccToUpdateMap,false);
                     }
                     
                 } else {
