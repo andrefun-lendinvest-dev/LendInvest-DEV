@@ -1,7 +1,7 @@
 public with sharing class OpportunityTriggerHandler {
 
     //main method to do the calculation whenever the amount needs to be added or removed from the total
-    public static void modifyAccountTotalCustomerSpend(Opportunity newOpp,Opportunity oldOpp,Map<String,AccountToUpdate> AccToUpdateMap, boolean addAmount){
+    public static void modifyAccountTotalCustomerSpend(Opportunity newOpp,Map<String,AccountToUpdate> AccToUpdateMap, boolean addAmount){
         try {
             AccountToUpdate accountToUpdate;
             if (!AccToUpdateMap.containsKey(newOpp.AccountId)){
@@ -27,17 +27,12 @@ public with sharing class OpportunityTriggerHandler {
 
     }
     
-    public static void changeOpportunityAccount(Opportunity newOpp,Opportunity oldOpp,Map<String,AccountToUpdate> AccToUpdateMap){
-            modifyAccountTotalCustomerSpend(newOpp, oldOpp, AccToUpdateMap, true);
-            modifyAccountTotalCustomerSpend(oldOpp, oldOpp, AccToUpdateMap, false);
-    }
-    
     public static void addAccountTotalCustomerSpend(Opportunity newOpp, Map<String,AccountToUpdate> AccToUpdateMap){
-            modifyAccountTotalCustomerSpend(newOpp, null, AccToUpdateMap, true);
+            modifyAccountTotalCustomerSpend(newOpp, AccToUpdateMap, true);
     }
     
     public static void removeAccountTotalCustomerSpend(Opportunity newOpp, Map<String,AccountToUpdate> AccToUpdateMap){
-            modifyAccountTotalCustomerSpend(newOpp, null, AccToUpdateMap, false);
+            modifyAccountTotalCustomerSpend(newOpp, AccToUpdateMap, false);
     }
     
     public static void updateAccountMap(Map<String,AccountToUpdate> AccToUpdateMap){
