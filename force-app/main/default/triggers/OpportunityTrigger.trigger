@@ -25,7 +25,7 @@ trigger OpportunityTrigger on Opportunity (before update,before insert,before de
                     
                 } else {
                     //checking if the opportunity has changed within the same account            
-					opportunityChangesToApplySelector(newOpp,oldOpp,AccToUpdateMap,false);
+		    opportunityChangesToApplySelector(newOpp,oldOpp,AccToUpdateMap,false);
 
                 }
 
